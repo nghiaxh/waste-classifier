@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 async function initializeApp() {
-    notification.innerHTML= "Đang tải mô hình..."
+    notification.innerHTML = "Đang tải mô hình...";
     model = await tmImage.load(MODEL_URL + 'model.json', MODEL_URL + 'metadata.json');
     notification.innerHTML = "Mô hình đã sẵn sàng!";
     console.log("Mô hình đã sẵn sàng!");
@@ -34,7 +34,25 @@ document.getElementById('image-upload').addEventListener('change', function (eve
 
 document.getElementById('start-camera').addEventListener('click', async function () {
     try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+        let videoConfig;
+
+        if (isMobile) {
+            videoConfig = {
+                facingMode: "environment"
+            };
+        } else {
+            videoConfig = {
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
+            };
+        }
+
+        const stream = await navigator.mediaDevices.getUserMedia({
+            video: videoConfig
+        });
+
         const video = document.createElement('video');
         video.srcObject = stream;
         video.autoplay = true;
@@ -119,16 +137,27 @@ document.getElementById('classify-btn').addEventListener('click', async function
     imgElement.src = currentImage;
     imgElement.width = 224;
     imgElement.height = 224;
-    await imgElement.decode();
 
-    const predictions = await model.predict(imgElement);
+    imgElement.onload = async function () {
+        try {
+            const predictions = await model.predict(imgElement);
 
-    const results = predictions.map(pred => ({
-        name: pred.className,
-        confidence: Math.round(pred.probability * 100)
-    })).sort((a, b) => b.confidence - a.confidence);
-    console.log(results);
-    showResults(results);
+            const results = predictions.map(pred => ({
+                name: pred.className,
+                confidence: Math.round(pred.probability * 100)
+            })).sort((a, b) => b.confidence - a.confidence);
+
+            console.log(results);
+            showResults(results);
+        } catch (error) {
+            console.error('Lỗi khi phân loại:', error);
+            predictionsDiv.innerHTML = '<p style="color: red;">Có lỗi xảy ra khi phân loại ảnh!</p>';
+        }
+    };
+
+    imgElement.onerror = function () {
+        predictionsDiv.innerHTML = '<p style="color: red;">Không thể tải ảnh!</p>';
+    };
 });
 
 function showResults(results) {
@@ -145,8 +174,8 @@ function showResults(results) {
     });
 
     const topResult = results[0];
-
     console.log(topResult);
+
     const advice = getAdvice(topResult.name);
     const color = getColor(topResult.name);
 
@@ -163,8 +192,8 @@ function showResults(results) {
 function getAdvice(wasteType) {
     const advice = {
         'Rác tái chế': 'Rửa sạch và để khô các vật liệu tái chế như chai nhựa, lon, giấy, bìa cứng. Nhớ tháo nắp chai và ép dẹp nếu có thể.',
-        'Hữu cơ': 'Gồm thức ăn thừa, vỏ rau củ, lá cây,... Có thể dùng để ủ phân compost tại nhà hoặc làm phân bón cho cây.',
-        'Rác không thể tái chế': 'Gồm túi nilon bẩn, giấy lau, gốm vỡ, khẩu trang... Đóng gói chắc chắn trước khi bỏ, đặc biệt với gốm vỡ hoặc vật sắc nhọn',
+        'Hữu cơ': 'Gồm thức ăn thừa, vỏ rau củ, lá cây,... Có thể dùng để ủ phân compost tại nhà hoặc làm phán bón cho cây.',
+        'Rác không thể tái chế': 'Gồm túi nilon bẩn, giấy lau, gốm vỡ, khẩu trang... Đóng gói chắc chắn trước khi bỏ, đặc biệt với gốm vỡ hoặc vật sắc nhọn.',
         'Rác hóa chất độc hại': 'Bao gồm pin, bóng đèn, hóa chất, thiết bị điện tử hỏng... Hãy mang đến điểm thu gom rác độc hại gần nhất.'
     };
     return advice[wasteType] || 'Xử lý theo quy định địa phương';
@@ -174,7 +203,7 @@ function getColor(wasteType) {
     const colors = {
         'Hữu cơ': '#cc9900',
         'Rác tái chế': '#4CAF50',
-        'Rác không thể tái thế': '#aaaaaa',
+        'Rác không thể tái chế': '#aaaaaa',
         'Rác hóa chất độc hại': '#FF5722'
     };
     return colors[wasteType] || '#666';
