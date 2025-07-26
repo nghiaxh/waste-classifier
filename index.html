@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phân Loại Rác Thải Thông Minh</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Thêm TensorFlow.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js"></script>
+    <!-- Thêm Teachable Machine -->
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>♻️ Phân Loại Rác Thải Thông Minh</h1>
+            <p>Sử dụng AI để nhận diện và phân loại rác thải chính xác</p>
+        </header>
+
+        <div class="main-layout">
+            <div class="left-column">
+                <aside class="aside">
+                    <h2>📚 Hướng Dẫn & Mẹo Vặt</h2>
+
+                    <div class="info-section">
+                        <h3>🗑️ Phân Loại Rác Thải</h3>
+                        <div class="waste-types">
+                            <div class="waste-card">
+                                <div class="waste-icon">🥕</div>
+                                <h4>Rác Hữu Cơ</h4>
+                                <p>Vỏ trái cây, thức ăn thừa, lá cây</p>
+                            </div>
+                            <div class="waste-card">
+                                <div class="waste-icon">♻️</div>
+                                <h4>Rác Tái Chế</h4>
+                                <p>Chai nhựa, lon nhôm, giấy sạch, bìa carton</p>
+                            </div>
+                            <div class="waste-card">
+                                <div class="waste-icon">🚫</div>
+                                <h4>Rác Không Thể Tái Chế</h4>
+                                <p>Túi nilon bẩn, giấy lau, gốm vỡ, khẩu trang</p>
+                            </div>
+                            <div class="waste-card">
+                                <div class="waste-icon">⚠️</div>
+                                <h4>Rác Độc Hại</h4>
+                                <p>Pin, bóng đèn, thuốc trừ sâu, sơn</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h3>🎨 Màu Thùng Rác</h3>
+                        <div class="color-guide">
+                            <div class="color-item">
+                                <div class="color-dot" style="background: #cc9900;"></div>
+                                <span>Nâu - Hữu cơ</span>
+                            </div>
+                            <div class="color-item">
+                                <div class="color-dot" style="background: #4CAF50;"></div>
+                                <span>Xanh - Tái chế</span>
+                            </div>
+                            <div class="color-item">
+                                <div class="color-dot" style="background: #aaaaaa;"></div>
+                                <span>Xám - Không Thể Tái chế</span>
+                            </div>
+                            <div class="color-item">
+                                <div class="color-dot" style="background: #FF5722;"></div>
+                                <span>Đỏ - Độc hại</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h3>💡 Mẹo Vặt Hữu Ích</h3>
+                        <ul class="tips-list">
+                            <li>Rửa sạch chai lọ trước khi bỏ vào thùng tái chế</li>
+                            <li>Tách nắp chai ra khỏi thân chai khi phân loại</li>
+                            <li>Giấy dính băng keo không thể tái chế được</li>
+                            <li>Pin hết hạn cần đưa đến điểm thu gom đặc biệt</li>
+                            <li>Túi nilon không bỏ chung với rác tái chế</li>
+                            <li>Thức ăn thừa nên ủ compost thay vì vứt bỏ</li>
+                        </ul>
+                    </div>
+                </aside>
+            </div>
+
+            <div class="left-column">
+                <div class="section" id="image-upload-section">
+                    <h3>📷 Chọn Ảnh</h3>
+                    <input type="file" id="image-upload" class="file-input" accept="image/*">
+                    <label for="image-upload" class="file-label">Chọn Ảnh</label>
+                    <p>JPG, PNG, JPEG</p>
+                </div>
+
+                <div class="section">
+                    <h3>📹 Camera</h3>
+                    <button id="start-camera" class="btn">Bật Camera</button>
+                    <button id="stop-camera" class="btn hidden">Tắt Camera</button>
+                    <div id="webcam-container"></div>
+                </div>
+
+                <div class="section hidden" id="image-section">
+                    <h3>🖼️ Ảnh Đã Chọn</h3>
+                    <div id="image-container"></div>
+                </div>
+
+                <div class="classify-section">
+                    <button id="classify-btn" class="btn classify-btn hidden">🔍 Phân Loại Ngay</button>
+                </div>
+
+                <div class="results" id="results">
+                    <h3>📊 Kết Quả Phân Loại</h3>
+                    <div id="predictions"></div>
+                </div>
+            </div>
+
+            <div class="right-column">
+                <div class="info-section">
+                    <h3>🌱 Tác Động Môi Trường</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-number">80%</span>
+                            <span class="stat-label">Rác có thể tái chế</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">500</span>
+                            <span class="stat-label">Năm phân hủy (chai nhựa)</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">17</span>
+                            <span class="stat-label">Cây cứu được/tấn giấy</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">95%</span>
+                            <span class="stat-label">Năng lượng tiết kiệm</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3>🌍 Lợi Ích Phân Loại Rác</h3>
+                    <ul class="tips-list">
+                        <li>Giảm thiểu ô nhiễm môi trường</li>
+                        <li>Tiết kiệm tài nguyên thiên nhiên</li>
+                        <li>Tạo việc làm cho ngành tái chế</li>
+                        <li>Giảm chi phí xử lý rác thải</li>
+                        <li>Bảo vệ sức khỏe cộng đồng</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
