@@ -8,6 +8,8 @@ body {
     font-family: Arial, sans-serif;
     background: url(./assets/background.jpg);
     padding: 20px;
+    background-position: center;
+    background-size: cover;
     line-height: 1.6;
 }
 
@@ -22,7 +24,7 @@ body {
 }
 
 .container {
-    max-width: 70vw;
+    /* max-width: 1368px; */
     margin: 0 auto;
     background: white;
     border-radius: 10px;
