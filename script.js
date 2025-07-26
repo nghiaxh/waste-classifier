@@ -5,14 +5,20 @@ let webcam = null;
 
 const resultsDiv = document.getElementById('results');
 const predictionsDiv = document.getElementById('predictions');
+const notification = document.getElementById('notification');
 
 document.addEventListener('DOMContentLoaded', function () {
     initializeApp();
 });
 
 async function initializeApp() {
+    notification.innerHTML= "Đang tải mô hình..."
     model = await tmImage.load(MODEL_URL + 'model.json', MODEL_URL + 'metadata.json');
+    notification.innerHTML = "Mô hình đã sẵn sàng!";
     console.log("Mô hình đã sẵn sàng!");
+    setTimeout(() => {
+        notification.style.display = "none";
+    }, 4000);
 }
 
 document.getElementById('image-upload').addEventListener('change', function (event) {
