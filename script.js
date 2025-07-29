@@ -1,4 +1,7 @@
-const MODEL_URL = "https://teachablemachine.withgoogle.com/models/N3iLxQA7A/";
+const SMALL_MODEL = "N3iLxQA7A";
+const LARGE_MODEL = "paTmySuYs";
+const MODEL_URL = `https://teachablemachine.withgoogle.com/models/${LARGE_MODEL}/`;
+
 let model = null;
 let currentImage = null;
 let webcam = null;
