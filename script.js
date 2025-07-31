@@ -150,7 +150,6 @@ document.getElementById('classify-btn').addEventListener('click', async function
                 confidence: Math.round(pred.probability * 100)
             })).sort((a, b) => b.confidence - a.confidence);
 
-            console.log(results);
             showResults(results);
         } catch (error) {
             console.error('Lỗi khi phân loại:', error);
@@ -177,7 +176,6 @@ function showResults(results) {
     });
 
     const topResult = results[0];
-    console.log(topResult);
 
     const advice = getAdvice(topResult.name);
     const color = getColor(topResult.name);
@@ -195,19 +193,19 @@ function showResults(results) {
 function getAdvice(wasteType) {
     const advice = {
         'Rác tái chế': 'Rửa sạch và để khô các vật liệu tái chế như chai nhựa, lon, giấy, bìa cứng. Nhớ tháo nắp chai và ép dẹp nếu có thể.',
-        'Hữu cơ': 'Gồm thức ăn thừa, vỏ rau củ, lá cây,... Có thể dùng để ủ phân compost tại nhà hoặc làm phán bón cho cây.',
+        'Rác hữu cơ': 'Gồm thức ăn thừa, vỏ rau củ, lá cây,... Có thể dùng để ủ phân compost tại nhà hoặc làm phán bón cho cây.',
         'Rác không thể tái chế': 'Gồm túi nilon bẩn, giấy lau, gốm vỡ, khẩu trang... Đóng gói chắc chắn trước khi bỏ, đặc biệt với gốm vỡ hoặc vật sắc nhọn.',
-        'Rác hóa chất độc hại': 'Bao gồm pin, bóng đèn, hóa chất, thiết bị điện tử hỏng... Hãy mang đến điểm thu gom rác độc hại gần nhất.'
+        'Rác độc hại': 'Bao gồm pin, bóng đèn, hóa chất, thiết bị điện tử hỏng... Hãy mang đến điểm thu gom rác độc hại gần nhất.'
     };
     return advice[wasteType] || 'Xử lý theo quy định địa phương';
 }
 
 function getColor(wasteType) {
     const colors = {
-        'Hữu cơ': '#cc9900',
+        'Rác hữu cơ': '#cc9900',
         'Rác tái chế': '#4CAF50',
         'Rác không thể tái chế': '#aaaaaa',
-        'Rác hóa chất độc hại': '#FF5722'
+        'Rác độc hại': '#FF5722'
     };
     return colors[wasteType] || '#666';
 }

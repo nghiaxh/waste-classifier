@@ -6,7 +6,6 @@
 
 body {
     font-family: Arial, sans-serif;
-    padding: 20px;
     line-height: 1.6;
 }
 
@@ -21,10 +20,8 @@ body {
 }
 
 .container {
-    /* max-width: 1368px; */
     margin: 0 auto;
     background: white;
-    border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
